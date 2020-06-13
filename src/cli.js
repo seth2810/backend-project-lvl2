@@ -9,7 +9,10 @@ const { program } = commander;
 
 program
   .version(version)
-  .description('Compares two configuration files and shows a difference.');
+  .description('Compares two configuration files and shows a difference.')
+  .helpOption('-h, --help', 'output usage information')
+  .option('-f, --format [type]', 'output format')
+  .arguments('<filepath1> <filepath2>');
 
 export default function runCli() {
   program.parse(process.argv);
