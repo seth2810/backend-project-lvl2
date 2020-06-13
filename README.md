@@ -6,4 +6,4 @@ This is another one example of diff generator project from hexlet in backend Jav
 [![Test Coverage](https://api.codeclimate.com/v1/badges/bf1ee139579ca1eaa098/test_coverage)](https://codeclimate.com/github/seth2810/backend-project-lvl2/test_coverage)
 [![Node CI](https://github.com/seth2810/backend-project-lvl2/workflows/Node.js%20CI/badge.svg)](https://github.com/seth2810/backend-project-lvl2/actions)
 
-[![asciicast](https://asciinema.org/a/a8wlKyUp6PhGyeevbATSxPJzN.svg)](https://asciinema.org/a/a8wlKyUp6PhGyeevbATSxPJzN)
+[![asciicast](https://asciinema.org/a/EIjTtansEhYJE9Y8pM3WWJdlx.svg)](https://asciinema.org/a/EIjTtansEhYJE9Y8pM3WWJdlx)

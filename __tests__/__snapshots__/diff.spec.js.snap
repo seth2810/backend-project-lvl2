@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ini flat should return correct diff 1`] = `
+"{
+    host: hexlet.io
+  + timeout: 20
+  - timeout: 50
+  - proxy: 123.234.53.22
+  - follow: false
+  + verbose: true
+}"
+`;
+
+exports[`json flat should return correct diff 1`] = `
+"{
+    host: hexlet.io
+  + timeout: 20
+  - timeout: 50
+  - proxy: 123.234.53.22
+  - follow: false
+  + verbose: true
+}"
+`;
+
+exports[`yml flat should return correct diff 1`] = `
+"{
+    host: hexlet.io
+  + timeout: 20
+  - timeout: 50
+  - proxy: 123.234.53.22
+  - follow: false
+  + verbose: true
+}"
+`;
