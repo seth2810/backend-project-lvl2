@@ -1,0 +1,41 @@
+{
+  "name": "backend-project-lvl2",
+  "version": "0.0.1",
+  "description": "files diff generator project",
+  "main": "src/cli.js",
+  "bin": {
+    "gendiff": "bin/gendiff.js"
+  },
+  "engines": {
+    "node": ">=13"
+  },
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seth2810/backend-project-lvl2.git"
+  },
+  "keywords": [
+    "diff",
+    "generator",
+    "configuration",
+    "files"
+  ],
+  "author": "seth2810",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/seth2810/backend-project-lvl2/issues"
+  },
+  "homepage": "https://github.com/seth2810/backend-project-lvl2#readme",
+  "dependencies": {
+    "commander": "^5.1.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.21.2"
+  }
+}
