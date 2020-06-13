@@ -1,6 +1,6 @@
-import fs from 'fs';
-
 import _ from 'lodash';
+
+import parse from './parsers.js';
 
 const diffType = Object.freeze({
   ADDED: 'added',
@@ -79,11 +79,8 @@ const formatDiff = (diff) => {
 };
 
 export default function genDiff(pathToFile1, pathToFile2) {
-  const fileContent1 = fs.readFileSync(pathToFile1, 'utf-8');
-  const fileContent2 = fs.readFileSync(pathToFile2, 'utf-8');
-
-  const fileData1 = JSON.parse(fileContent1);
-  const fileData2 = JSON.parse(fileContent2);
+  const fileData1 = parse(pathToFile1);
+  const fileData2 = parse(pathToFile2);
   const diff = getDiff(fileData1, fileData2);
 
   return formatDiff(diff);
