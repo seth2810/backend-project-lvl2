@@ -86,5 +86,5 @@ export default function genDiff(pathToFile1, pathToFile2) {
   const fileData2 = JSON.parse(fileContent2);
   const diff = getDiff(fileData1, fileData2);
 
-  console.log(formatDiff(diff));
+  return formatDiff(diff);
 }

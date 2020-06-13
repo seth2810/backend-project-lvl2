@@ -1,0 +1,16 @@
+---
+plugins:
+  # https://github.com/jest-community/eslint-plugin-jest
+  - jest
+
+env:
+  jest: true
+
+parser: "babel-eslint"
+
+extends:
+  - "plugin:jest/recommended"
+
+globals:
+  # helper function for fixtures path resolving
+  resolveFixturePath: "readonly"
