@@ -1,11 +1,11 @@
 import genDiff from '../src/index.js';
 
-describe.each(['json', 'yml', 'ini'])('%s', (extension) => {
-  describe('flat', () => {
+describe('diff', () => {
+  describe.each(['json', 'yml', 'ini'])('%s', (extension) => {
     it('should return correct diff', () => {
-      const pathToFile1 = resolveFixturePath(`${extension}/flat/before.${extension}`);
-      const pathToFile2 = resolveFixturePath(`${extension}/flat/after.${extension}`);
-      const result = genDiff(pathToFile1, pathToFile2);
+      const pathToFile1 = resolveFixturePath(`before.${extension}`);
+      const pathToFile2 = resolveFixturePath(`after.${extension}`);
+      const result = genDiff(pathToFile1, pathToFile2, 'stylish');
 
       expect(result).toMatchSnapshot();
     });

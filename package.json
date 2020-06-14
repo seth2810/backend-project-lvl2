@@ -1,6 +1,6 @@
 {
   "name": "backend-project-lvl2",
-  "version": "0.0.1",
+  "version": "0.0.7",
   "description": "files diff generator project",
   "main": "src/cli.js",
   "bin": {
