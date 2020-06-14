@@ -1,6 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`diff json should return correct diff 1`] = `
+exports[`diff ini plain should return correct diff 1`] = `
+"Property 'common.follow' was added with value: false
+Property 'common.setting2' was deleted
+Property 'common.setting3' was changed from true to [complex value]
+Property 'common.setting4' was added with value: 'blah blah'
+Property 'common.setting5' was added with value: [complex value]
+Property 'common.setting6.ops' was added with value: 'vops'
+Property 'group1.baz' was changed from 'bas' to 'bars'
+Property 'group1.nest' was changed from [complex value] to 'str'
+Property 'group2' was deleted
+Property 'group3' was added with value: [complex value]"
+`;
+
+exports[`diff ini stylish should return correct diff 1`] = `
 "{
     common: {
       + follow: false
@@ -37,7 +50,20 @@ exports[`diff json should return correct diff 1`] = `
 }"
 `;
 
-exports[`diff yml should return correct diff 1`] = `
+exports[`diff json plain should return correct diff 1`] = `
+"Property 'common.follow' was added with value: false
+Property 'common.setting2' was deleted
+Property 'common.setting3' was changed from true to [complex value]
+Property 'common.setting4' was added with value: 'blah blah'
+Property 'common.setting5' was added with value: [complex value]
+Property 'common.setting6.ops' was added with value: 'vops'
+Property 'group1.baz' was changed from 'bas' to 'bars'
+Property 'group1.nest' was changed from [complex value] to 'str'
+Property 'group2' was deleted
+Property 'group3' was added with value: [complex value]"
+`;
+
+exports[`diff json stylish should return correct diff 1`] = `
 "{
     common: {
       + follow: false
@@ -74,7 +100,20 @@ exports[`diff yml should return correct diff 1`] = `
 }"
 `;
 
-exports[`diff ini should return correct diff 1`] = `
+exports[`diff yml plain should return correct diff 1`] = `
+"Property 'common.follow' was added with value: false
+Property 'common.setting2' was deleted
+Property 'common.setting3' was changed from true to [complex value]
+Property 'common.setting4' was added with value: 'blah blah'
+Property 'common.setting5' was added with value: [complex value]
+Property 'common.setting6.ops' was added with value: 'vops'
+Property 'group1.baz' was changed from 'bas' to 'bars'
+Property 'group1.nest' was changed from [complex value] to 'str'
+Property 'group2' was deleted
+Property 'group3' was added with value: [complex value]"
+`;
+
+exports[`diff yml stylish should return correct diff 1`] = `
 "{
     common: {
       + follow: false

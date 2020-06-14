@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import buildDiff, { diffTypes } from './diff.js';
+import buildDiff, { diffTypes } from '../diff.js';
 
 const diffSigns = Object.freeze({
   [diffTypes.ADDED]: '+',
