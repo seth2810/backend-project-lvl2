@@ -1,5 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`diff ini json should return correct diff 1`] = `"[{\\"children\\":[{\\"value\\":false,\\"type\\":\\"added\\",\\"key\\":\\"follow\\"},{\\"value\\":\\"Value 1\\",\\"type\\":\\"equals\\",\\"key\\":\\"setting1\\"},{\\"value\\":\\"200\\",\\"type\\":\\"removed\\",\\"key\\":\\"setting2\\"},{\\"left\\":true,\\"right\\":{\\"key\\":\\"value\\"},\\"type\\":\\"changed\\",\\"key\\":\\"setting3\\"},{\\"value\\":\\"blah blah\\",\\"type\\":\\"added\\",\\"key\\":\\"setting4\\"},{\\"value\\":{\\"key5\\":\\"value5\\"},\\"type\\":\\"added\\",\\"key\\":\\"setting5\\"},{\\"children\\":[{\\"value\\":\\"value\\",\\"type\\":\\"equals\\",\\"key\\":\\"key\\"},{\\"value\\":\\"vops\\",\\"type\\":\\"added\\",\\"key\\":\\"ops\\"}],\\"type\\":\\"nested\\",\\"key\\":\\"setting6\\"}],\\"type\\":\\"nested\\",\\"key\\":\\"common\\"},{\\"children\\":[{\\"left\\":\\"bas\\",\\"right\\":\\"bars\\",\\"type\\":\\"changed\\",\\"key\\":\\"baz\\"},{\\"value\\":\\"bar\\",\\"type\\":\\"equals\\",\\"key\\":\\"foo\\"},{\\"left\\":{\\"key\\":\\"value\\"},\\"right\\":\\"str\\",\\"type\\":\\"changed\\",\\"key\\":\\"nest\\"}],\\"type\\":\\"nested\\",\\"key\\":\\"group1\\"},{\\"value\\":{\\"abc\\":\\"12345\\"},\\"type\\":\\"removed\\",\\"key\\":\\"group2\\"},{\\"value\\":{\\"fee\\":\\"100500\\"},\\"type\\":\\"added\\",\\"key\\":\\"group3\\"}]"`;
+
 exports[`diff ini plain should return correct diff 1`] = `
 "Property 'common.follow' was added with value: false
 Property 'common.setting2' was deleted
@@ -50,6 +52,8 @@ exports[`diff ini stylish should return correct diff 1`] = `
 }"
 `;
 
+exports[`diff json json should return correct diff 1`] = `"[{\\"children\\":[{\\"value\\":false,\\"type\\":\\"added\\",\\"key\\":\\"follow\\"},{\\"value\\":\\"Value 1\\",\\"type\\":\\"equals\\",\\"key\\":\\"setting1\\"},{\\"value\\":200,\\"type\\":\\"removed\\",\\"key\\":\\"setting2\\"},{\\"left\\":true,\\"right\\":{\\"key\\":\\"value\\"},\\"type\\":\\"changed\\",\\"key\\":\\"setting3\\"},{\\"value\\":\\"blah blah\\",\\"type\\":\\"added\\",\\"key\\":\\"setting4\\"},{\\"value\\":{\\"key5\\":\\"value5\\"},\\"type\\":\\"added\\",\\"key\\":\\"setting5\\"},{\\"children\\":[{\\"value\\":\\"value\\",\\"type\\":\\"equals\\",\\"key\\":\\"key\\"},{\\"value\\":\\"vops\\",\\"type\\":\\"added\\",\\"key\\":\\"ops\\"}],\\"type\\":\\"nested\\",\\"key\\":\\"setting6\\"}],\\"type\\":\\"nested\\",\\"key\\":\\"common\\"},{\\"children\\":[{\\"left\\":\\"bas\\",\\"right\\":\\"bars\\",\\"type\\":\\"changed\\",\\"key\\":\\"baz\\"},{\\"value\\":\\"bar\\",\\"type\\":\\"equals\\",\\"key\\":\\"foo\\"},{\\"left\\":{\\"key\\":\\"value\\"},\\"right\\":\\"str\\",\\"type\\":\\"changed\\",\\"key\\":\\"nest\\"}],\\"type\\":\\"nested\\",\\"key\\":\\"group1\\"},{\\"value\\":{\\"abc\\":12345},\\"type\\":\\"removed\\",\\"key\\":\\"group2\\"},{\\"value\\":{\\"fee\\":100500},\\"type\\":\\"added\\",\\"key\\":\\"group3\\"}]"`;
+
 exports[`diff json plain should return correct diff 1`] = `
 "Property 'common.follow' was added with value: false
 Property 'common.setting2' was deleted
@@ -99,6 +103,8 @@ exports[`diff json stylish should return correct diff 1`] = `
     }
 }"
 `;
+
+exports[`diff yml json should return correct diff 1`] = `"[{\\"children\\":[{\\"value\\":false,\\"type\\":\\"added\\",\\"key\\":\\"follow\\"},{\\"value\\":\\"Value 1\\",\\"type\\":\\"equals\\",\\"key\\":\\"setting1\\"},{\\"value\\":200,\\"type\\":\\"removed\\",\\"key\\":\\"setting2\\"},{\\"left\\":true,\\"right\\":{\\"key\\":\\"value\\"},\\"type\\":\\"changed\\",\\"key\\":\\"setting3\\"},{\\"value\\":\\"blah blah\\",\\"type\\":\\"added\\",\\"key\\":\\"setting4\\"},{\\"value\\":{\\"key5\\":\\"value5\\"},\\"type\\":\\"added\\",\\"key\\":\\"setting5\\"},{\\"children\\":[{\\"value\\":\\"value\\",\\"type\\":\\"equals\\",\\"key\\":\\"key\\"},{\\"value\\":\\"vops\\",\\"type\\":\\"added\\",\\"key\\":\\"ops\\"}],\\"type\\":\\"nested\\",\\"key\\":\\"setting6\\"}],\\"type\\":\\"nested\\",\\"key\\":\\"common\\"},{\\"children\\":[{\\"left\\":\\"bas\\",\\"right\\":\\"bars\\",\\"type\\":\\"changed\\",\\"key\\":\\"baz\\"},{\\"value\\":\\"bar\\",\\"type\\":\\"equals\\",\\"key\\":\\"foo\\"},{\\"left\\":{\\"key\\":\\"value\\"},\\"right\\":\\"str\\",\\"type\\":\\"changed\\",\\"key\\":\\"nest\\"}],\\"type\\":\\"nested\\",\\"key\\":\\"group1\\"},{\\"value\\":{\\"abc\\":12345},\\"type\\":\\"removed\\",\\"key\\":\\"group2\\"},{\\"value\\":{\\"fee\\":100500},\\"type\\":\\"added\\",\\"key\\":\\"group3\\"}]"`;
 
 exports[`diff yml plain should return correct diff 1`] = `
 "Property 'common.follow' was added with value: false
