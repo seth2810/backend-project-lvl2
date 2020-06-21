@@ -8,44 +8,37 @@ export const diffTypes = Object.freeze({
   CHANGED: 'changed',
 });
 
-const diffBuilders = [
-  {
-    type: diffTypes.NESTED,
-    condition: (left, right) => _.isPlainObject(left) && _.isPlainObject(right),
-    build: (left, right, getDiff) => ({ children: getDiff(left, right) }),
-  },
-  {
-    type: diffTypes.EQUALS,
-    condition: (left, right) => left === right,
-    build: (value) => ({ value }),
-  },
-  {
-    type: diffTypes.ADDED,
-    condition: (left) => left === undefined,
-    build: (left, right) => ({ value: right }),
-  },
-  {
-    type: diffTypes.REMOVED,
-    condition: (left, right) => right === undefined,
-    build: (value) => ({ value }),
-  },
-  {
-    type: diffTypes.CHANGED,
-    condition: () => true,
-    build: (left, right) => ({ left, right }),
-  },
-];
+const getKeyDiff = (key, object1, object2, getDiff) => {
+  if (!_.has(object2, key)) {
+    return { value: object1[key], type: diffTypes.REMOVED, key };
+  }
 
-export default function buildDiff(object1, object2) {
+  if (!_.has(object1, key)) {
+    return { value: object2[key], type: diffTypes.ADDED, key };
+  }
+
+  const value1 = object1[key];
+  const value2 = object2[key];
+
+  if (_.isPlainObject(value1) && _.isPlainObject(value2)) {
+    return { children: getDiff(value1, value2), type: diffTypes.NESTED, key };
+  }
+
+  if (value1 === value2) {
+    return { value: value1, type: diffTypes.EQUALS, key };
+  }
+
+  return {
+    left: value1, right: value2, type: diffTypes.CHANGED, key,
+  };
+};
+
+const buildDiff = (object1, object2) => {
   const keysUnion = _.union(Object.keys(object1), Object.keys(object2)).sort();
 
-  const diff = keysUnion.map((key) => {
-    const { [key]: value1 } = object1;
-    const { [key]: value2 } = object2;
-    const { type, build } = diffBuilders.find(({ condition }) => condition(value1, value2));
-
-    return Object.assign(build(value1, value2, buildDiff), { type, key });
-  }, []);
+  const diff = keysUnion.map((key) => getKeyDiff(key, object1, object2, buildDiff));
 
   return diff;
-}
+};
+
+export default buildDiff;

@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import { diffTypes } from '../diff.js';
 
-const buildFullPath = (path, key) => (path ? `${path}.${key}` : key);
+const buildFullPath = (path, key) => [path, key].filter(Boolean).join('.');
 
 const stringify = (value) => {
   if (_.isPlainObject(value)) {
@@ -16,41 +16,35 @@ const stringify = (value) => {
   return value;
 };
 
-const formatters = [
-  {
-    condition: ({ type }) => type === diffTypes.NESTED,
-    process: ({ key, children }, path, formatter) => formatter(children, buildFullPath(path, key)),
-  },
-  {
-    condition: ({ type }) => type === diffTypes.CHANGED,
-    process: ({ key, left, right }, path) => (
-      `Property '${buildFullPath(path, key)}' was changed from ${stringify(left)} to ${stringify(right)}`
-    ),
-  },
-  {
-    condition: ({ type }) => type === diffTypes.ADDED,
-    process: ({ key, value }, path) => (
-      `Property '${buildFullPath(path, key)}' was added with value: ${stringify(value)}`
-    ),
-  },
-  {
-    condition: ({ type }) => type === diffTypes.REMOVED,
-    process: ({ key }, path) => (
-      `Property '${buildFullPath(path, key)}' was deleted`
-    ),
-  },
-];
+const formatters = {
+  [diffTypes.NESTED]: ({ key, children }, path, formatter) => (
+    formatter(children, buildFullPath(path, key))
+  ),
+  [diffTypes.CHANGED]: ({ key, left, right }, path) => (
+    `Property '${buildFullPath(path, key)}' was changed from ${stringify(left)} to ${stringify(right)}`
+  ),
+  [diffTypes.ADDED]: ({ key, value }, path) => (
+    `Property '${buildFullPath(path, key)}' was added with value: ${stringify(value)}`
+  ),
+  [diffTypes.REMOVED]: ({ key }, path) => (
+    `Property '${buildFullPath(path, key)}' was deleted`
+  ),
+};
 
-export default function format(diff, path = null) {
-  const diffLines = diff.map((item) => {
-    const formatter = formatters.find(({ condition }) => condition(item));
+const format = (diff, path = null) => {
+  const diffLines = diff.filter(({ type }) => type !== diffTypes.EQUALS).map((item) => {
+    const { type } = item;
 
-    if (formatter) {
-      return formatter.process(item, path, format);
+    const formatter = formatters[type];
+
+    if (!formatter) {
+      throw new Error(`Unable to format type '${type}'`);
     }
 
-    return null;
+    return formatter(item, path, format);
   }, []);
 
   return diffLines.filter(Boolean).join('\n');
-}
+};
+
+export default format;

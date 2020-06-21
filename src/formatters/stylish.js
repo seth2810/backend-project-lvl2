@@ -9,7 +9,7 @@ const diffSigns = Object.freeze({
 
 const getIndent = (depth) => ' '.repeat(depth * 2);
 
-function formatDiffType(type, key, value, depth, formatter) {
+const formatDiffType = (type, key, value, depth, formatter) => {
   const indent = getIndent(depth + 1);
   const { [type]: sign = '' } = diffSigns;
   const signAlligned = sign.padEnd(2, ' ');
@@ -18,7 +18,7 @@ function formatDiffType(type, key, value, depth, formatter) {
     : value;
 
   return `${indent}${signAlligned}${key}: ${valueFormatted}`;
-}
+};
 
 const formatters = [
   {
@@ -42,7 +42,7 @@ const formatters = [
   },
 ];
 
-export default function format(diff, depth = 0) {
+const format = (diff, depth = 0) => {
   const diffLines = diff.flatMap((item) => {
     const formatter = formatters.find(({ condition }) => condition(item));
 
@@ -53,4 +53,6 @@ export default function format(diff, depth = 0) {
   const bracketsIndent = getIndent(depth);
 
   return `{\n${content}\n${bracketsIndent}}`;
-}
+};
+
+export default format;
