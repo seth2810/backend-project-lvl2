@@ -20,33 +20,36 @@ const formatDiffType = (type, key, value, depth, formatter) => {
   return `${indent}${signAlligned}${key}: ${valueFormatted}`;
 };
 
-const formatters = [
-  {
-    condition: ({ type }) => type === diffTypes.CHANGED,
-    process: ({ key, left, right }, depth, formatter) => [
-      formatDiffType(diffTypes.REMOVED, key, left, depth, formatter),
-      formatDiffType(diffTypes.ADDED, key, right, depth, formatter),
-    ],
-  },
-  {
-    condition: ({ type }) => type === diffTypes.NESTED,
-    process: ({ type, key, children }, depth, formatter) => [
-      formatDiffType(type, key, formatter(children, depth + 2), depth),
-    ],
-  },
-  {
-    condition: () => true,
-    process: ({ type, key, value }, depth, formatter) => [
-      formatDiffType(type, key, value, depth, formatter),
-    ],
-  },
-];
+const formatters = {
+  [diffTypes.CHANGED]: ({ key, left, right }, depth, formatDiff) => [
+    formatDiffType(diffTypes.REMOVED, key, left, depth, formatDiff),
+    formatDiffType(diffTypes.ADDED, key, right, depth, formatDiff),
+  ],
+  [diffTypes.NESTED]: ({ type, key, children }, depth, formatDiff) => [
+    formatDiffType(type, key, formatDiff(children, depth + 2), depth),
+  ],
+  [diffTypes.EQUALS]: ({ type, key, value }, depth, formatDiff) => [
+    formatDiffType(type, key, value, depth, formatDiff),
+  ],
+  [diffTypes.ADDED]: ({ type, key, value }, depth, formatDiff) => [
+    formatDiffType(type, key, value, depth, formatDiff),
+  ],
+  [diffTypes.REMOVED]: ({ type, key, value }, depth, formatDiff) => [
+    formatDiffType(type, key, value, depth, formatDiff),
+  ],
+};
 
 const format = (diff, depth = 0) => {
   const diffLines = diff.flatMap((item) => {
-    const formatter = formatters.find(({ condition }) => condition(item));
+    const { type } = item;
 
-    return formatter.process(item, depth, format);
+    const formatDiff = formatters[type];
+
+    if (typeof formatDiff !== 'function') {
+      throw new Error(`Unable to format type '${type}'`);
+    }
+
+    return formatDiff(item, depth, format);
   });
 
   const content = diffLines.join('\n');

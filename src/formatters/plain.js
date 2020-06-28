@@ -35,14 +35,14 @@ const format = (diff, path = null) => {
   const diffLines = diff.filter(({ type }) => type !== diffTypes.EQUALS).map((item) => {
     const { type } = item;
 
-    const formatter = formatters[type];
+    const formatDiff = formatters[type];
 
-    if (!formatter) {
+    if (typeof formatDiff !== 'function') {
       throw new Error(`Unable to format type '${type}'`);
     }
 
-    return formatter(item, path, format);
-  }, []);
+    return formatDiff(item, path, format);
+  });
 
   return diffLines.filter(Boolean).join('\n');
 };

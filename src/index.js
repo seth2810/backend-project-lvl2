@@ -6,13 +6,13 @@ import buildDiff from './diff.js';
 import { getFormatterTypes, getFormatter, defaultFormatterType } from './formatters/index.js';
 
 export const genDiff = (pathToFile1, pathToFile2, format) => {
-  const fileContent1 = fs.readFileSync(pathToFile1, 'utf-8');
   const fileExtension1 = path.extname(pathToFile1);
-  const fileData1 = parse(fileContent1, fileExtension1);
+  const fileContent1 = fs.readFileSync(pathToFile1, 'utf-8');
+  const fileData1 = parse(fileContent1, fileExtension1.substr(1));
 
-  const fileContent2 = fs.readFileSync(pathToFile2, 'utf-8');
   const fileExtension2 = path.extname(pathToFile2);
-  const fileData2 = parse(fileContent2, fileExtension2);
+  const fileContent2 = fs.readFileSync(pathToFile2, 'utf-8');
+  const fileData2 = parse(fileContent2, fileExtension2.substr(1));
 
   const diff = buildDiff(fileData1, fileData2);
 
