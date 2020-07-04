@@ -17,34 +17,34 @@ const stringify = (value) => {
 };
 
 const formatters = {
-  [diffTypes.NESTED]: ({ key, children }, path, formatter) => (
-    formatter(children, buildFullPath(path, key))
-  ),
-  [diffTypes.CHANGED]: ({ key, left, right }, path) => (
-    `Property '${buildFullPath(path, key)}' was changed from ${stringify(left)} to ${stringify(right)}`
-  ),
-  [diffTypes.ADDED]: ({ key, value }, path) => (
-    `Property '${buildFullPath(path, key)}' was added with value: ${stringify(value)}`
-  ),
-  [diffTypes.REMOVED]: ({ key }, path) => (
-    `Property '${buildFullPath(path, key)}' was deleted`
-  ),
+  [diffTypes.NESTED]: ({ key, children }, path, formatter) =>
+    formatter(children, buildFullPath(path, key)),
+  [diffTypes.CHANGED]: ({ key, left, right }, path) =>
+    `Property '${buildFullPath(path, key)}' was changed from ${stringify(left)} to ${stringify(right)}`,
+  [diffTypes.ADDED]: ({ key, value }, path) =>
+    `Property '${buildFullPath(path, key)}' was added with value: ${stringify(value)}`,
+  [diffTypes.REMOVED]: ({ key }, path) =>
+    `Property '${buildFullPath(path, key)}' was deleted`,
 };
 
-const format = (diff, path = null) => {
-  const diffLines = diff.filter(({ type }) => type !== diffTypes.EQUALS).map((item) => {
-    const { type } = item;
+const format = (diff) => {
+  const iter = (innerDiff, path) => {
+    const diffLines = innerDiff.filter(({ type }) => type !== diffTypes.EQUALS).map((item) => {
+      const { type } = item;
 
-    const formatDiff = formatters[type];
+      const formatDiff = formatters[type];
 
-    if (typeof formatDiff !== 'function') {
-      throw new Error(`Unable to format type '${type}'`);
-    }
+      if (typeof formatDiff !== 'function') {
+        throw new Error(`Unable to format type '${type}'`);
+      }
 
-    return formatDiff(item, path, format);
-  });
+      return formatDiff(item, path, iter);
+    });
 
-  return diffLines.filter(Boolean).join('\n');
+    return diffLines.filter(Boolean).join('\n');
+  };
+
+  return iter(diff, null);
 };
 
 export default format;

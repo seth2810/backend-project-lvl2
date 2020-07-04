@@ -25,37 +25,37 @@ const formatters = {
     formatDiffType(diffTypes.REMOVED, key, left, depth, formatDiff),
     formatDiffType(diffTypes.ADDED, key, right, depth, formatDiff),
   ],
-  [diffTypes.NESTED]: ({ type, key, children }, depth, formatDiff) => [
+  [diffTypes.NESTED]: ({ type, key, children }, depth, formatDiff) =>
     formatDiffType(type, key, formatDiff(children, depth + 2), depth),
-  ],
-  [diffTypes.EQUALS]: ({ type, key, value }, depth, formatDiff) => [
+  [diffTypes.EQUALS]: ({ type, key, value }, depth, formatDiff) =>
     formatDiffType(type, key, value, depth, formatDiff),
-  ],
-  [diffTypes.ADDED]: ({ type, key, value }, depth, formatDiff) => [
+  [diffTypes.ADDED]: ({ type, key, value }, depth, formatDiff) =>
     formatDiffType(type, key, value, depth, formatDiff),
-  ],
-  [diffTypes.REMOVED]: ({ type, key, value }, depth, formatDiff) => [
+  [diffTypes.REMOVED]: ({ type, key, value }, depth, formatDiff) =>
     formatDiffType(type, key, value, depth, formatDiff),
-  ],
 };
 
-const format = (diff, depth = 0) => {
-  const diffLines = diff.flatMap((item) => {
-    const { type } = item;
+const format = (diff) => {
+  const iter = (innerDiff, depth) => {
+    const diffLines = innerDiff.flatMap((item) => {
+      const { type } = item;
 
-    const formatDiff = formatters[type];
+      const formatDiff = formatters[type];
 
-    if (typeof formatDiff !== 'function') {
-      throw new Error(`Unable to format type '${type}'`);
-    }
+      if (typeof formatDiff !== 'function') {
+        throw new Error(`Unable to format type '${type}'`);
+      }
 
-    return formatDiff(item, depth, format);
-  });
+      return formatDiff(item, depth, iter);
+    });
 
-  const content = diffLines.join('\n');
-  const bracketsIndent = getIndent(depth);
+    const content = diffLines.join('\n');
+    const bracketsIndent = getIndent(depth);
 
-  return `{\n${content}\n${bracketsIndent}}`;
+    return `{\n${content}\n${bracketsIndent}}`;
+  };
+
+  return iter(diff, 0);
 };
 
 export default format;
