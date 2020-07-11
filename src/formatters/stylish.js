@@ -1,58 +1,60 @@
 import _ from 'lodash';
 
-import buildDiff, { diffTypes } from '../diff.js';
+import { diffTypes } from '../diff.js';
 
-const diffSigns = Object.freeze({
-  [diffTypes.ADDED]: '+',
-  [diffTypes.REMOVED]: '-',
+const indentString = ' '.repeat(2);
+
+export const diffSigns = Object.freeze({
+  ADDED: '+',
+  REMOVED: '-',
 });
 
-const getIndent = (depth) => ' '.repeat(depth * 2);
+const wrapInBrackets = (str, closeIndent) => `{\n${str}\n${closeIndent}}`;
 
-const formatDiffType = (type, key, value, depth, formatter) => {
-  const indent = getIndent(depth + 1);
-  const { [type]: sign = '' } = diffSigns;
-  const signAlligned = sign.padEnd(2, ' ');
-  const valueFormatted = _.isPlainObject(value)
-    ? formatter(buildDiff(value, value), depth + 2)
-    : value;
+const stringify = (key, value, indent, sign = ' ') => {
+  const prefix = `${indent}${sign} ${key}: `;
 
-  return `${indent}${signAlligned}${key}: ${valueFormatted}`;
-};
+  if (!_.isPlainObject(value)) {
+    return `${prefix}${value}`;
+  }
 
-const formatters = {
-  [diffTypes.CHANGED]: ({ key, left, right }, depth, formatDiff) => [
-    formatDiffType(diffTypes.REMOVED, key, left, depth, formatDiff),
-    formatDiffType(diffTypes.ADDED, key, right, depth, formatDiff),
-  ],
-  [diffTypes.NESTED]: ({ type, key, children }, depth, formatDiff) =>
-    formatDiffType(type, key, formatDiff(children, depth + 2), depth),
-  [diffTypes.EQUALS]: ({ type, key, value }, depth, formatDiff) =>
-    formatDiffType(type, key, value, depth, formatDiff),
-  [diffTypes.ADDED]: ({ type, key, value }, depth, formatDiff) =>
-    formatDiffType(type, key, value, depth, formatDiff),
-  [diffTypes.REMOVED]: ({ type, key, value }, depth, formatDiff) =>
-    formatDiffType(type, key, value, depth, formatDiff),
+  const innerKeys = Object.keys(value);
+  const wrapIndent = `${indent}${indentString}`;
+  const innerIndent = `${indent}${indentString.repeat(2)}`;
+  const lines = innerKeys.map((innerKey) => stringify(innerKey, value[innerKey], innerIndent));
+  const content = wrapInBrackets(lines.join('\n'), wrapIndent);
+
+  return `${prefix}${content}`;
 };
 
 const format = (diff) => {
   const iter = (innerDiff, depth) => {
+    const wrapIndent = indentString.repeat(depth);
+    const innerIndent = indentString.repeat(depth + 1);
+
     const diffLines = innerDiff.flatMap((item) => {
-      const { type } = item;
+      const { type, key } = item;
 
-      const formatDiff = formatters[type];
-
-      if (typeof formatDiff !== 'function') {
-        throw new Error(`Unable to format type '${type}'`);
+      switch (type) {
+        case diffTypes.NESTED:
+          return stringify(key, iter(item.children, depth + 2), innerIndent);
+        case diffTypes.CHANGED:
+          return [
+            stringify(key, item.left, innerIndent, diffSigns.REMOVED),
+            stringify(key, item.right, innerIndent, diffSigns.ADDED),
+          ];
+        case diffTypes.EQUALS:
+          return stringify(key, item.value, innerIndent);
+        case diffTypes.ADDED:
+          return stringify(key, item.value, innerIndent, diffSigns.ADDED);
+        case diffTypes.REMOVED:
+          return stringify(key, item.value, innerIndent, diffSigns.REMOVED);
+        default:
+          throw new Error(`Unable to format type '${type}'`);
       }
-
-      return formatDiff(item, depth, iter);
     });
 
-    const content = diffLines.join('\n');
-    const bracketsIndent = getIndent(depth);
-
-    return `{\n${content}\n${bracketsIndent}}`;
+    return wrapInBrackets(diffLines.join('\n'), wrapIndent);
   };
 
   return iter(diff, 0);

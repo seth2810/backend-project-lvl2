@@ -2,46 +2,43 @@ import _ from 'lodash';
 
 import { diffTypes } from '../diff.js';
 
-const buildFullPath = (path, key) => [path, key].filter(Boolean).join('.');
+const buildFullPath = (path, key) => _.compact([path, key]).join('.');
 
-const stringify = (value) => {
-  if (_.isPlainObject(value)) {
+const stringify = (data) => {
+  if (_.isPlainObject(data)) {
     return '[complex value]';
   }
 
-  if (_.isString(value)) {
-    return `'${value}'`;
+  if (_.isString(data)) {
+    return `'${data}'`;
   }
 
-  return value;
-};
-
-const formatters = {
-  [diffTypes.NESTED]: ({ key, children }, path, formatter) =>
-    formatter(children, buildFullPath(path, key)),
-  [diffTypes.CHANGED]: ({ key, left, right }, path) =>
-    `Property '${buildFullPath(path, key)}' was changed from ${stringify(left)} to ${stringify(right)}`,
-  [diffTypes.ADDED]: ({ key, value }, path) =>
-    `Property '${buildFullPath(path, key)}' was added with value: ${stringify(value)}`,
-  [diffTypes.REMOVED]: ({ key }, path) =>
-    `Property '${buildFullPath(path, key)}' was deleted`,
+  return data;
 };
 
 const format = (diff) => {
   const iter = (innerDiff, path) => {
-    const diffLines = innerDiff.filter(({ type }) => type !== diffTypes.EQUALS).map((item) => {
-      const { type } = item;
+    const diffLines = innerDiff.flatMap((item) => {
+      const { type, key } = item;
+      const itemPath = buildFullPath(path, key);
 
-      const formatDiff = formatters[type];
-
-      if (typeof formatDiff !== 'function') {
-        throw new Error(`Unable to format type '${type}'`);
+      switch (type) {
+        case diffTypes.EQUALS:
+          return [];
+        case diffTypes.NESTED:
+          return iter(item.children, itemPath);
+        case diffTypes.CHANGED:
+          return `Property '${itemPath}' was changed from ${stringify(item.left)} to ${stringify(item.right)}`;
+        case diffTypes.ADDED:
+          return `Property '${itemPath}' was added with value: ${stringify(item.value)}`;
+        case diffTypes.REMOVED:
+          return `Property '${itemPath}' was deleted`;
+        default:
+          throw new Error(`Unable to format type '${type}'`);
       }
-
-      return formatDiff(item, path, iter);
     });
 
-    return diffLines.filter(Boolean).join('\n');
+    return diffLines.join('\n');
   };
 
   return iter(diff, null);
