@@ -28,11 +28,11 @@ const format = (diff) => {
         case diffTypes.NESTED:
           return iter(item.children, itemPath);
         case diffTypes.CHANGED:
-          return `Property '${itemPath}' was changed from ${stringify(item.left)} to ${stringify(item.right)}`;
+          return `Property '${itemPath}' was updated. From ${stringify(item.left)} to ${stringify(item.right)}`;
         case diffTypes.ADDED:
           return `Property '${itemPath}' was added with value: ${stringify(item.value)}`;
         case diffTypes.REMOVED:
-          return `Property '${itemPath}' was deleted`;
+          return `Property '${itemPath}' was removed`;
         default:
           throw new Error(`Unable to format type '${type}'`);
       }

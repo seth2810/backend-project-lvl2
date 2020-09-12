@@ -16,7 +16,6 @@ const runCli = () => {
   program
     .version(version)
     .description('Compares two configuration files and shows a difference.')
-    .helpOption('-h, --help', 'output usage information')
     .option(`-f, --format [${formatterOptions}]`, 'output format', defaultFormatterType)
     .arguments('<filepath1> <filepath2>')
     .action((pathToFile1, pathToFile2) => {

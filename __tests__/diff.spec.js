@@ -1,17 +1,18 @@
-import { genDiff, getFormatterTypes } from '../src/index.js';
+import { genDiff } from '../src/index.js';
 
 import helpers from './helpers';
 
 describe('diff', () => {
-  describe.each(['json', 'yml', 'ini'])('%s', (extension) => {
-    describe.each(getFormatterTypes())('%s', (format) => {
-      it('should return correct diff', () => {
-        const pathToFile1 = helpers.resolveFixturePath(`before.${extension}`);
-        const pathToFile2 = helpers.resolveFixturePath(`after.${extension}`);
-        const result = genDiff(pathToFile1, pathToFile2, format);
+  const stylishResult = helpers.readFixture('stylish-result.txt');
+  const plainResult = helpers.readFixture('plain-result.txt');
+  const jsonResult = helpers.readFixture('json-result.txt');
 
-        expect(result).toMatchSnapshot();
-      });
-    });
+  test.each(['json', 'yml', 'ini'])('should return correct diffs between two %s files', (type) => {
+    const pathToFile1 = helpers.resolveFixturePath(`file1.${type}`);
+    const pathToFile2 = helpers.resolveFixturePath(`file2.${type}`);
+
+    expect(genDiff(pathToFile1, pathToFile2, 'stylish')).toEqual(stylishResult);
+    expect(genDiff(pathToFile1, pathToFile2, 'plain')).toEqual(plainResult);
+    expect(genDiff(pathToFile1, pathToFile2, 'json')).toEqual(jsonResult);
   });
 });
