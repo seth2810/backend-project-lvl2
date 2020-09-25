@@ -6,7 +6,7 @@ const indentString = ' '.repeat(2);
 
 export const diffSigns = Object.freeze({
   ADDED: '+',
-  REMOVED: '-',
+  DELETED: '-',
 });
 
 const wrapInBrackets = (str, closeIndent) => `{\n${str}\n${closeIndent}}`;
@@ -40,15 +40,15 @@ const format = (diff) => {
           return stringify(key, iter(item.children, depth + 2), innerIndent);
         case diffTypes.CHANGED:
           return [
-            stringify(key, item.left, innerIndent, diffSigns.REMOVED),
-            stringify(key, item.right, innerIndent, diffSigns.ADDED),
+            stringify(key, item.value1, innerIndent, diffSigns.DELETED),
+            stringify(key, item.value2, innerIndent, diffSigns.ADDED),
           ];
-        case diffTypes.EQUALS:
+        case diffTypes.UNCHANGED:
           return stringify(key, item.value, innerIndent);
         case diffTypes.ADDED:
           return stringify(key, item.value, innerIndent, diffSigns.ADDED);
-        case diffTypes.REMOVED:
-          return stringify(key, item.value, innerIndent, diffSigns.REMOVED);
+        case diffTypes.DELETED:
+          return stringify(key, item.value, innerIndent, diffSigns.DELETED);
         default:
           throw new Error(`Unable to format type '${type}'`);
       }

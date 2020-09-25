@@ -7,11 +7,7 @@ const formatters = Object.freeze({
   JSON: 'json',
 });
 
-export const getFormatterTypes = () => Object.values(formatters);
-
-export const defaultFormatterType = formatters.STYLISH;
-
-export const getFormatter = (type) => {
+export default (type) => {
   switch (type) {
     case formatters.STYLISH:
       return stylishFormatter;

@@ -3,9 +3,9 @@ import path from 'path';
 
 import parse from './parsers.js';
 import buildDiff from './diff.js';
-import { getFormatterTypes, getFormatter, defaultFormatterType } from './formatters/index.js';
+import getFormatter from './formatters/index.js';
 
-export const genDiff = (pathToFile1, pathToFile2, format) => {
+const genDiff = (pathToFile1, pathToFile2, format = 'stylish') => {
   const fileExtension1 = path.extname(pathToFile1);
   const fileContent1 = fs.readFileSync(pathToFile1, 'utf-8');
   const fileData1 = parse(fileContent1, fileExtension1.substr(1));
@@ -21,4 +21,4 @@ export const genDiff = (pathToFile1, pathToFile2, format) => {
   return formatDiff(diff);
 };
 
-export { getFormatterTypes, defaultFormatterType };
+export default genDiff;

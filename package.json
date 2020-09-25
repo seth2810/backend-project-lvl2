@@ -36,7 +36,6 @@
     "lodash": "^4.17.20"
   },
   "devDependencies": {
-    "babel-eslint": "^10.1.0",
     "eslint": "^7.2.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.21.2",
@@ -46,8 +45,7 @@
   "jest": {
     "testEnvironment": "node",
     "testPathIgnorePatterns": [
-      "/node_modules/",
-      "<rootDir>/__tests__/helpers"
+      "/node_modules/"
     ]
   }
 }

@@ -3,40 +3,41 @@ import _ from 'lodash';
 export const diffTypes = Object.freeze({
   ADDED: 'added',
   NESTED: 'nested',
-  EQUALS: 'equals',
-  REMOVED: 'removed',
+  DELETED: 'deleted',
   CHANGED: 'changed',
+  UNCHANGED: 'unchanged',
 });
 
-const getKeyDiff = (key, left, right, getDiff) => {
-  if (!_.has(right, key)) {
-    return { value: left[key], type: diffTypes.REMOVED, key };
+const getKeyDiff = (key, object1, object2, getDiff) => {
+  if (!_.has(object2, key)) {
+    return { key, type: diffTypes.DELETED, value: object1[key] };
   }
 
-  if (!_.has(left, key)) {
-    return { value: right[key], type: diffTypes.ADDED, key };
+  if (!_.has(object1, key)) {
+    return { key, type: diffTypes.ADDED, value: object2[key] };
   }
 
-  const leftValue = left[key];
-  const rightValue = right[key];
+  const value1 = object1[key];
+  const value2 = object2[key];
 
-  if (_.isPlainObject(leftValue) && _.isPlainObject(rightValue)) {
-    return { children: getDiff(leftValue, rightValue), type: diffTypes.NESTED, key };
+  if (_.isPlainObject(value1) && _.isPlainObject(value2)) {
+    return { key, type: diffTypes.NESTED, children: getDiff(value1, value2) };
   }
 
-  if (leftValue === rightValue) {
-    return { value: leftValue, type: diffTypes.EQUALS, key };
+  if (value1 === value2) {
+    return { key, type: diffTypes.UNCHANGED, value: value1 };
   }
 
   return {
-    left: leftValue, right: rightValue, type: diffTypes.CHANGED, key,
+    key, type: diffTypes.CHANGED, value1, value2,
   };
 };
 
 const buildDiff = (left, right) => {
-  const keysUnion = _.union(Object.keys(left), Object.keys(right)).sort();
+  const keysUnion = _.union(Object.keys(left), Object.keys(right));
+  const sortedKeys = _.sortBy(keysUnion);
 
-  return keysUnion.map((key) => getKeyDiff(key, left, right, buildDiff));
+  return sortedKeys.map((key) => getKeyDiff(key, left, right, buildDiff));
 };
 
 export default buildDiff;
