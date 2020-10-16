@@ -1,5 +1,5 @@
 {
-  "name": "backend-project-lvl2",
+  "name": "@seth2810/backend-project-lvl2",
   "version": "0.0.9",
   "description": "files diff generator project",
   "main": "src/cli.js",
