@@ -3,7 +3,7 @@ import path from 'path';
 
 import parse from './parsers.js';
 import buildDiff from './diff.js';
-import getFormatter from './formatters/index.js';
+import formatDiff from './formatters/index.js';
 
 const genDiff = (pathToFile1, pathToFile2, format = 'stylish') => {
   const fileExtension1 = path.extname(pathToFile1);
@@ -16,9 +16,7 @@ const genDiff = (pathToFile1, pathToFile2, format = 'stylish') => {
 
   const diff = buildDiff(fileData1, fileData2);
 
-  const formatDiff = getFormatter(format);
-
-  return formatDiff(diff);
+  return formatDiff(diff, format);
 };
 
 export default genDiff;

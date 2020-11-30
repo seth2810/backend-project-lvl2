@@ -1,21 +1,10 @@
-import plainFormatter from './plain.js';
-import stylishFormatter from './stylish.js';
+import formatPlain from './plain.js';
+import formatStylish from './stylish.js';
 
 const formatters = Object.freeze({
-  STYLISH: 'stylish',
-  PLAIN: 'plain',
-  JSON: 'json',
+  stylish: formatStylish,
+  plain: formatPlain,
+  json: JSON.stringify,
 });
 
-export default (type) => {
-  switch (type) {
-    case formatters.STYLISH:
-      return stylishFormatter;
-    case formatters.PLAIN:
-      return plainFormatter;
-    case formatters.JSON:
-      return JSON.stringify;
-    default:
-      throw new Error(`Formatter for type '${type}' not found`);
-  }
-};
+export default (diff, type) => formatters[type](diff);

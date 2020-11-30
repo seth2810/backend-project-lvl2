@@ -2,62 +2,45 @@ import _ from 'lodash';
 
 import { diffTypes } from '../diff.js';
 
-const indentString = ' '.repeat(2);
+const indentStep = 4;
 
-export const diffSigns = Object.freeze({
-  ADDED: '+',
-  DELETED: '-',
-});
+const getIndent = (size) => ' '.repeat(size);
 
-const wrapInBrackets = (str, closeIndent) => `{\n${str}\n${closeIndent}}`;
+const wrapLines = (lines, depth) => `{\n${lines.join('\n')}\n${getIndent(depth)}}`;
 
-const stringify = (key, value, indent, sign = ' ') => {
-  const prefix = `${indent}${sign} ${key}: `;
-
+const stringify = (value, depth) => {
   if (!_.isPlainObject(value)) {
-    return `${prefix}${value}`;
+    return value;
   }
 
-  const innerKeys = Object.keys(value);
-  const wrapIndent = `${indent}${indentString}`;
-  const innerIndent = `${indent}${indentString.repeat(2)}`;
-  const lines = innerKeys.map((innerKey) => stringify(innerKey, value[innerKey], innerIndent));
-  const content = wrapInBrackets(lines.join('\n'), wrapIndent);
+  const entries = Object.entries(value);
+  const innerDepth = depth + indentStep;
+  const lines = entries.map(([key, child]) => `${getIndent(innerDepth)}${key}: ${stringify(child, innerDepth)}`);
 
-  return `${prefix}${content}`;
+  return wrapLines(lines, depth);
 };
 
-const format = (diff) => {
-  const iter = (innerDiff, depth) => {
-    const wrapIndent = indentString.repeat(depth);
-    const innerIndent = indentString.repeat(depth + 1);
+const mappings = {
+  [diffTypes.NESTED]: ({ key, children }, depth, iter) => `${getIndent(depth)}    ${key}: ${iter(children, depth + indentStep)}`,
+  [diffTypes.ADDED]: ({ key, value }, depth) => `${getIndent(depth)}  + ${key}: ${stringify(value, depth + indentStep)}`,
+  [diffTypes.DELETED]: ({ key, value }, depth) => `${getIndent(depth)}  - ${key}: ${stringify(value, depth + indentStep)}`,
+  [diffTypes.UNCHANGED]: ({ key, value }, depth) => `${getIndent(depth)}    ${key}: ${stringify(value, depth + indentStep)}`,
+  [diffTypes.CHANGED]: ({ key, value1, value2 }, depth) => [
+    `${getIndent(depth)}  - ${key}: ${stringify(value1, depth + indentStep)}`,
+    `${getIndent(depth)}  + ${key}: ${stringify(value2, depth + indentStep)}`,
+  ],
+};
 
-    const diffLines = innerDiff.flatMap((item) => {
-      const { type, key } = item;
+export default (diff) => {
+  const iter = (nodes, depth) => {
+    const lines = nodes.flatMap((node) => {
+      const { type } = node;
 
-      switch (type) {
-        case diffTypes.NESTED:
-          return stringify(key, iter(item.children, depth + 2), innerIndent);
-        case diffTypes.CHANGED:
-          return [
-            stringify(key, item.value1, innerIndent, diffSigns.DELETED),
-            stringify(key, item.value2, innerIndent, diffSigns.ADDED),
-          ];
-        case diffTypes.UNCHANGED:
-          return stringify(key, item.value, innerIndent);
-        case diffTypes.ADDED:
-          return stringify(key, item.value, innerIndent, diffSigns.ADDED);
-        case diffTypes.DELETED:
-          return stringify(key, item.value, innerIndent, diffSigns.DELETED);
-        default:
-          throw new Error(`Unable to format type '${type}'`);
-      }
+      return mappings[type](node, depth, iter);
     });
 
-    return wrapInBrackets(diffLines.join('\n'), wrapIndent);
+    return wrapLines(lines, depth);
   };
 
   return iter(diff, 0);
 };
-
-export default format;

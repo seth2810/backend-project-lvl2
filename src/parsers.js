@@ -3,14 +3,14 @@ import _ from 'lodash';
 import yaml from 'js-yaml';
 
 // @see https://github.com/npm/ini/issues/75
-const isNumericLike = (value) => !Number.isNaN(parseFloat(value));
+const isNumeric = (value) => !Number.isNaN(parseFloat(value));
 
 const convertNumericLike = (data) => _.mapValues(data, (value) => {
   if (_.isObject(value)) {
     return convertNumericLike(value);
   }
 
-  if (isNumericLike(value)) {
+  if (isNumeric(value)) {
     return parseFloat(value);
   }
 

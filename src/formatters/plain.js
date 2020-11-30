@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import { diffTypes } from '../diff.js';
 
-const buildFullPath = (path, key) => _.compact([path, key]).join('.');
+const stringifyPath = (path) => path.join('.');
 
 const stringify = (data) => {
   if (_.isPlainObject(data)) {
@@ -16,32 +16,24 @@ const stringify = (data) => {
   return data;
 };
 
-const format = (diff) => {
-  const iter = (innerDiff, path) => {
-    const diffLines = innerDiff.flatMap((item) => {
-      const { type, key } = item;
-      const itemPath = buildFullPath(path, key);
-
-      switch (type) {
-        case diffTypes.UNCHANGED:
-          return [];
-        case diffTypes.NESTED:
-          return iter(item.children, itemPath);
-        case diffTypes.CHANGED:
-          return `Property '${itemPath}' was updated. From ${stringify(item.value1)} to ${stringify(item.value2)}`;
-        case diffTypes.ADDED:
-          return `Property '${itemPath}' was added with value: ${stringify(item.value)}`;
-        case diffTypes.DELETED:
-          return `Property '${itemPath}' was removed`;
-        default:
-          throw new Error(`Unable to format type '${type}'`);
-      }
-    });
-
-    return diffLines.join('\n');
-  };
-
-  return iter(diff, null);
+const mapping = {
+  [diffTypes.NESTED]: (path, { children }, iter) => iter(children, path),
+  [diffTypes.ADDED]: (path, { value }) => `Property '${stringifyPath(path)}' was added with value: ${stringify(value)}`,
+  [diffTypes.DELETED]: (path) => `Property '${stringifyPath(path)}' was removed`,
+  [diffTypes.CHANGED]: (path, { value1, value2 }) => `Property '${stringifyPath(path)}' was updated. From ${stringify(value1)} to ${stringify(value2)}`,
+  [diffTypes.UNCHANGED]: () => [],
 };
 
-export default format;
+export default (diff) => {
+  const iter = (nodes, path) => {
+    const lines = nodes.flatMap((node) => {
+      const { type, key } = node;
+
+      return mapping[type]([...path, key], node, iter);
+    });
+
+    return lines.join('\n');
+  };
+
+  return iter(diff, []);
+};
