@@ -7,7 +7,7 @@
     "gendiff": "bin/gendiff.js"
   },
   "engines": {
-    "node": ">=13"
+    "node": ">=15"
   },
   "type": "module",
   "scripts": {
